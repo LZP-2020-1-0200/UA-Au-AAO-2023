@@ -10,7 +10,7 @@ import matplotlib.image as mpimg
 import cv2
 
 OUTFOLDER = 'tmp_7r'
-JPG_TIMESTAMPS_FILE_NAME = 'Aleksandrs/timestamps-jpg-0201.txt'
+JPG_TIMESTAMPS_FILE_NAME = 'Aleksandrs/timestamps-jpg-0202.txt'
 # SPECTRA_ZIP_FILE_NAME = '31.01.23.zip'
 # SPECTRA_TIMESTAMPS_FILE_BASENAME = 'timestamps-asc-0201'
 SPECTRA_ZIP_FILE_NAME = '31.01.23-02.02.23.zip'
@@ -55,7 +55,8 @@ cur.execute(f"""CREATE TABLE IF NOT EXISTS {c.EXPERIMENTS_TABLE}(
     {c.COL_DARK_FOR_WHITE} TEXT,
     {c.COL_WHITE} TEXT,
     {c.COL_MEDIUM} TEXT,
-    {c.COL_POL} TEXT
+    {c.COL_POL} TEXT,
+    {c.COL_NAME} TEXT
     )""")
 
 cur.execute(f"DROP TABLE IF EXISTS {c.SPOTS_TABLE}")
@@ -293,7 +294,7 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
         ref_fig_width, ref_fig_width*ref_fig_ratio))
     (ax_white, ax_dfw, ax_dark) = axs
     for refset in reference_sets:
-        print(refset)
+        print(f"refset = {refset}")
         cur.execute(f"""INSERT INTO {c.REF_SETS_TABLE}
             ({c.COL_WHITE},{c.COL_DARK_FOR_WHITE},{c.DARK},{c.COL_POL})
             VALUES (?,?,?,?)""",
@@ -335,7 +336,28 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
     experiments = session_json_object['experiments']
     print(experiments[0].keys())
     for experiment in experiments:
-        print(f"{experiment['folder']} {experiment['name']}")
+        #print(f"{experiment['folder']} {experiment['name']}")
+        print(experiment)
+        series = experiment['folder'].split('\\')[-1]
+        white = None
+        dark_for_white = None
+        dark = None
+        medium = None
+        pol = None
+        name = None
+        print(series)
+
+        cur.execute(f"""UPDATE {c.EXPERIMENTS_TABLE} SET
+            {c.COL_WHITE} = ?,
+            {c.COL_DARK_FOR_WHITE} = ?,
+            {c.COL_DARK} = ?,
+            {c.COL_MEDIUM} = ?,
+            {c.COL_POL} = ?,
+            {c.COL_NAME} = ?
+        WHERE {c.COL_SERIES} = ? """,
+                    [white, dark_for_white, dark, medium, pol, name, series])
+        if cur.rowcount != 1:
+            print(point)
 
     # print(ref_spec.keys())
     #dict_keys(['Date and Time', 'Software Version', 'Temperature (C)', 'Model', 'Data Type', 'Acquisition Mode', 'Trigger Mode', 'Exposure Time (secs)', 'Accumulate Cycle Time (secs)', 'Frequency (Hz)', 'Number of Accumulations', 'Readout Mode', 'Horizontal binning', 'Extended Data Range', 'Horizontally flipped', 'Vertical Shift Speed (usecs)', 'Pixel Readout Time (usecs)', 'Serial Number', 'Pre-Amplifier Gain', 'Spurious Noise Filter Mode', 'Photon counted', 'Data Averaging Filter Mode', 'SR163', 'Wavelength (nm)', 'Grating Groove Density (l/mm)', 'col1', 'col2'])

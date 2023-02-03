@@ -74,6 +74,7 @@ COL_DAY = 'day'
 COL_RI = 'ri'
 COL_POL = 'pol'
 COL_LINE = 'line'
+COL_NAME = 'name'
 
 REFS = {DARK_FOR_WHITE: {S0709: 'tumsa_balt_ref_2diena', S1409: 'tumsa_balta1509'},
         DARK: {S0709: '2_tumsa_merijumiem', S1409: 'tumsa1509'},
