@@ -9,6 +9,7 @@ NaCl_22 = 'NaCl22'
 POL = 'pol'
 P_POL = 'P-pol'
 S_POL = 'S-pol'
+UNPOL = 'unpol'
 NM = 'nm'
 
 RI = {AIR: 1.0,

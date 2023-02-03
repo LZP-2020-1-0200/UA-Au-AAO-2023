@@ -1,0 +1,665 @@
+{
+    "flags": {
+        "points_set": true,
+        "anchors_set": true
+    },
+    "points": [
+        {
+            "x": 58404,
+            "y": -55046,
+            "filename": "00001.asc"
+        },
+        {
+            "x": 58286,
+            "y": -55109,
+            "filename": "00002.asc"
+        },
+        {
+            "x": 58040,
+            "y": -54778,
+            "filename": "00003.asc"
+        },
+        {
+            "x": 57825,
+            "y": -55455,
+            "filename": "00004.asc"
+        },
+        {
+            "x": 58312,
+            "y": -55533,
+            "filename": "00005.asc"
+        },
+        {
+            "x": 58127,
+            "y": -55656,
+            "filename": "00006.asc"
+        },
+        {
+            "x": 61537,
+            "y": -55271,
+            "filename": "00007.asc"
+        },
+        {
+            "x": 61588,
+            "y": -55503,
+            "filename": "00008.asc"
+        },
+        {
+            "x": 61588,
+            "y": -54911,
+            "filename": "00009.asc"
+        },
+        {
+            "x": 61348,
+            "y": -54911,
+            "filename": "00010.asc"
+        },
+        {
+            "x": 61348,
+            "y": -54722,
+            "filename": "00011.asc"
+        },
+        {
+            "x": 61307,
+            "y": -54559,
+            "filename": "00012.asc"
+        },
+        {
+            "x": 61189,
+            "y": -54267,
+            "filename": "00013.asc"
+        },
+        {
+            "x": 61727,
+            "y": -54267,
+            "filename": "00014.asc"
+        },
+        {
+            "x": 61123,
+            "y": -54611,
+            "filename": "00015.asc"
+        },
+        {
+            "x": 58424,
+            "y": -54705,
+            "filename": "00016.asc"
+        },
+        {
+            "x": 58424,
+            "y": -54969,
+            "filename": "00017.asc"
+        },
+        {
+            "x": 58189,
+            "y": -57437,
+            "filename": "00018.asc"
+        },
+        {
+            "x": 58327,
+            "y": -57499,
+            "filename": "00019.asc"
+        },
+        {
+            "x": 58578,
+            "y": -57562,
+            "filename": "00020.asc"
+        },
+        {
+            "x": 58737,
+            "y": -57562,
+            "filename": "00021.asc"
+        },
+        {
+            "x": 60687,
+            "y": -58247,
+            "filename": "00022.asc"
+        },
+        {
+            "x": 60498,
+            "y": -58198,
+            "filename": "00023.asc"
+        },
+        {
+            "x": 59540,
+            "y": -58539,
+            "filename": "00024.asc"
+        },
+        {
+            "x": 59556,
+            "y": -58381,
+            "filename": "00025.asc"
+        },
+        {
+            "x": 59167,
+            "y": -58333,
+            "filename": "00026.asc"
+        },
+        {
+            "x": 59054,
+            "y": -58333,
+            "filename": "00027.asc"
+        },
+        {
+            "x": 59100,
+            "y": -58085,
+            "filename": "00028.asc"
+        },
+        {
+            "x": 58947,
+            "y": -58085,
+            "filename": "00029.asc"
+        },
+        {
+            "x": 58839,
+            "y": -58162,
+            "filename": "00030.asc"
+        },
+        {
+            "x": 58829,
+            "y": -57940,
+            "filename": "00031.asc"
+        },
+        {
+            "x": 58701,
+            "y": -58305,
+            "filename": "00032.asc"
+        },
+        {
+            "x": 58189,
+            "y": -58277,
+            "filename": "00033.asc"
+        },
+        {
+            "x": 57068,
+            "y": -58277,
+            "filename": "00034.asc"
+        },
+        {
+            "x": 57068,
+            "y": -58143,
+            "filename": "00035.asc"
+        },
+        {
+            "x": 57170,
+            "y": -58048,
+            "filename": "00036.asc"
+        },
+        {
+            "x": 57062,
+            "y": -58040,
+            "filename": "00037.asc"
+        },
+        {
+            "x": 56392,
+            "y": -57979,
+            "filename": "00038.asc"
+        },
+        {
+            "x": 56274,
+            "y": -58355,
+            "filename": "00039.asc"
+        },
+        {
+            "x": 58056,
+            "y": -53877,
+            "filename": "00040.asc"
+        },
+        {
+            "x": 57170,
+            "y": -54121,
+            "filename": "00041.asc"
+        },
+        {
+            "x": 56704,
+            "y": -54121,
+            "filename": "00042.asc"
+        },
+        {
+            "x": 61092,
+            "y": -54623,
+            "filename": "00043.asc"
+        },
+        {
+            "x": 60319,
+            "y": -53020,
+            "filename": "00044.asc"
+        },
+        {
+            "x": 60165,
+            "y": -53356,
+            "filename": "00045.asc"
+        },
+        {
+            "x": 60257,
+            "y": -53356,
+            "filename": "00046.asc"
+        },
+        {
+            "x": 59858,
+            "y": -53319,
+            "filename": "00047.asc"
+        },
+        {
+            "x": 59310,
+            "y": -53319,
+            "filename": "00048.asc"
+        },
+        {
+            "x": 58168,
+            "y": -53319,
+            "filename": "00049.asc"
+        },
+        {
+            "x": 58040,
+            "y": -53319,
+            "filename": "00050.asc"
+        },
+        {
+            "x": 58040,
+            "y": -53495,
+            "filename": "00051.asc"
+        },
+        {
+            "x": 58040,
+            "y": -53823,
+            "filename": "00052.asc"
+        }
+    ],
+    "refs": [
+        {
+            "file": "refs\\white01.asc",
+            "type": "white",
+            "timestamp": "2023-01-31 13:27:48.186455"
+        },
+        {
+            "file": "refs\\darkForWhite01.asc",
+            "type": "darkForWhite",
+            "timestamp": "2023-01-31 13:28:45.600417"
+        },
+        {
+            "file": "refs\\dark01.asc",
+            "type": "dark",
+            "timestamp": "2023-01-31 13:32:05.702890"
+        },
+        {
+            "file": "refs\\white02.asc",
+            "type": "white",
+            "timestamp": "2023-01-31 13:34:15.777930"
+        },
+        {
+            "file": "refs\\darkForWhite02.asc",
+            "type": "darkForWhite",
+            "timestamp": "2023-01-31 13:34:47.064370"
+        },
+        {
+            "file": "refs\\dark02.asc",
+            "type": "dark",
+            "timestamp": "2023-01-31 13:34:55.766698"
+        },
+        {
+            "file": "refs\\white03.asc",
+            "type": "white",
+            "timestamp": "2023-01-31 14:33:49.560505"
+        },
+        {
+            "file": "refs\\darkForWhite03.asc",
+            "type": "darkForWhite",
+            "timestamp": "2023-01-31 14:35:33.531165"
+        },
+        {
+            "file": "refs\\dark03.asc",
+            "type": "dark",
+            "timestamp": "2023-01-31 15:06:51.106463"
+        },
+        {
+            "file": "refs\\white04.asc",
+            "type": "white",
+            "timestamp": "2023-01-31 15:09:47.599622"
+        },
+        {
+            "file": "refs\\darkForWhite04.asc",
+            "type": "darkForWhite",
+            "timestamp": "2023-01-31 15:10:33.673968"
+        },
+        {
+            "file": "refs\\dark04.asc",
+            "type": "dark",
+            "timestamp": "2023-01-31 15:12:12.418949"
+        },
+        {
+            "file": "refs\\white05.asc",
+            "type": "white",
+            "timestamp": "2023-01-31 15:36:50.969943"
+        },
+        {
+            "file": "refs\\darkForWhite05.asc",
+            "type": "darkForWhite",
+            "timestamp": "2023-01-31 15:37:40.367279"
+        },
+        {
+            "file": "refs\\white06.asc",
+            "type": "white",
+            "timestamp": "2023-02-01 11:23:17.142590"
+        },
+        {
+            "file": "refs\\darkForWhite06.asc",
+            "type": "darkForWhite",
+            "timestamp": "2023-02-01 11:23:48.902505"
+        },
+        {
+            "file": "refs\\dark05.asc",
+            "type": "dark",
+            "timestamp": "2023-02-01 11:23:58.694319"
+        },
+        {
+            "file": "refs\\white07.asc",
+            "type": "white",
+            "timestamp": "2023-02-01 12:03:45.308826"
+        },
+        {
+            "file": "refs\\darkForWhite07.asc",
+            "type": "darkForWhite",
+            "timestamp": "2023-02-01 12:04:10.609108"
+        },
+        {
+            "file": "refs\\dark06.asc",
+            "type": "dark",
+            "timestamp": "2023-02-01 12:04:22.763818"
+        },
+        {
+            "file": "refs\\dark07.asc",
+            "type": "dark",
+            "timestamp": "2023-02-01 12:16:22.450688"
+        },
+        {
+            "file": "refs\\white08.asc",
+            "type": "white",
+            "timestamp": "2023-02-01 12:31:49.327303"
+        },
+        {
+            "file": "refs\\darkForWhite08.asc",
+            "type": "darkForWhite",
+            "timestamp": "2023-02-01 12:32:16.900005"
+        },
+        {
+            "file": "refs\\dark08.asc",
+            "type": "dark",
+            "timestamp": "2023-02-01 12:32:48.700078"
+        },
+        {
+            "file": "refs\\white09.asc",
+            "type": "white",
+            "timestamp": "2023-02-01 13:43:01.473733"
+        },
+        {
+            "file": "refs\\white10.asc",
+            "type": "white",
+            "timestamp": "2023-02-01 13:44:25.830950"
+        },
+        {
+            "file": "refs\\darkForWhite09.asc",
+            "type": "darkForWhite",
+            "timestamp": "2023-02-01 13:45:06.704641"
+        },
+        {
+            "file": "refs\\dark09.asc",
+            "type": "dark",
+            "timestamp": "2023-02-01 13:45:12.364716"
+        }
+    ],
+    "anchors": [
+        {
+            "x": 54216,
+            "y": -51962
+        },
+        {
+            "x": 54359,
+            "y": -60686
+        },
+        {
+            "x": 62950,
+            "y": -51873
+        }
+    ],
+    "experiments": [
+        {
+            "folder": "experiments\\000",
+            "name": "Air-reflectance",
+            "timestamp": "2023-01-31 14:24:48.924100",
+            "white_index": 0,
+            "dark_index": 0,
+            "d4w_index": 0,
+            "img_dir": ""
+        },
+        {
+            "folder": "experiments\\001",
+            "name": "Air-s-pol",
+            "timestamp": "2023-01-31 14:45:36.870817",
+            "white_index": 0,
+            "dark_index": 2,
+            "d4w_index": 1,
+            "img_dir": "imgs\\experiments\\001"
+        },
+        {
+            "folder": "experiments\\002",
+            "name": "Air-p-pol",
+            "timestamp": "2023-01-31 15:13:13.530277",
+            "white_index": 3,
+            "dark_index": 5,
+            "d4w_index": 4,
+            "img_dir": "imgs\\experiments\\002"
+        },
+        {
+            "folder": "experiments\\003",
+            "name": "Water-reflectance",
+            "timestamp": "2023-01-31 15:52:29.750683",
+            "white_index": 6,
+            "dark_index": 8,
+            "d4w_index": 7,
+            "img_dir": "imgs\\experiments\\003"
+        },
+        {
+            "folder": "experiments\\004",
+            "name": "water-p-pol",
+            "timestamp": "2023-01-31 15:58:18.345241",
+            "white_index": 9,
+            "dark_index": 11,
+            "d4w_index": 10,
+            "img_dir": "imgs\\experiments\\004"
+        },
+        {
+            "folder": "experiments\\005",
+            "name": "water-s-pol",
+            "timestamp": "2023-01-31 16:12:11.378462",
+            "white_index": 12,
+            "dark_index": 16,
+            "d4w_index": 13,
+            "img_dir": "imgs\\experiments\\005"
+        },
+        {
+            "folder": "experiments\\006",
+            "name": "Water-reflectance",
+            "timestamp": "2023-02-01 11:35:33.929916",
+            "white_index": 14,
+            "dark_index": 19,
+            "d4w_index": 15,
+            "img_dir": "imgs\\experiments\\006"
+        },
+        {
+            "folder": "experiments\\007",
+            "name": "water-s-pol",
+            "timestamp": "2023-02-01 12:17:49.850237",
+            "white_index": 0,
+            "dark_index": 0,
+            "d4w_index": 0,
+            "img_dir": ""
+        },
+        {
+            "folder": "experiments\\008",
+            "name": "water-p-pol",
+            "timestamp": "2023-02-01 12:35:29.098299",
+            "white_index": 21,
+            "dark_index": 23,
+            "d4w_index": 22,
+            "img_dir": "imgs\\experiments\\008"
+        },
+        {
+            "folder": "experiments\\009",
+            "name": "Water-reflectance",
+            "timestamp": "2023-02-01 13:56:44.571445",
+            "white_index": 24,
+            "dark_index": 27,
+            "d4w_index": 26,
+            "img_dir": ""
+        },
+        {
+            "folder": "experiments\\010",
+            "name": "water-p-pol",
+            "timestamp": "2023-02-01 14:03:59.292626",
+            "white_index": 21,
+            "dark_index": 23,
+            "d4w_index": 22,
+            "img_dir": "imgs\\experiments\\010"
+        },
+        {
+            "folder": "experiments\\011",
+            "name": "water-s-pol",
+            "timestamp": "2023-02-01 14:14:48.532314",
+            "white_index": 25,
+            "dark_index": 27,
+            "d4w_index": 26,
+            "img_dir": "imgs\\experiments\\011"
+        },
+        {
+            "folder": "experiments\\013",
+            "name": "NaCl4-s-pol",
+            "timestamp": "2023-02-01 14:33:16.671063",
+            "white_index": 25,
+            "dark_index": 27,
+            "d4w_index": 26,
+            "img_dir": "imgs\\experiments\\013"
+        },
+        {
+            "folder": "experiments\\014",
+            "name": "NaCl4-p-pol",
+            "timestamp": "2023-02-01 14:44:35.496148",
+            "white_index": 21,
+            "dark_index": 23,
+            "d4w_index": 22,
+            "img_dir": "imgs\\experiments\\014"
+        },
+        {
+            "folder": "experiments\\015",
+            "name": "NaCl4-reflectance",
+            "timestamp": "2023-02-01 15:04:20.769227",
+            "white_index": 24,
+            "dark_index": 27,
+            "d4w_index": 26,
+            "img_dir": "imgs\\experiments\\015"
+        },
+        {
+            "folder": "experiments\\016",
+            "name": "NaCl10-reflectance",
+            "timestamp": "2023-02-01 15:22:37.708037",
+            "white_index": 24,
+            "dark_index": 27,
+            "d4w_index": 26,
+            "img_dir": "imgs\\experiments\\016"
+        },
+        {
+            "folder": "experiments\\017",
+            "name": "NaCl10-p-pol",
+            "timestamp": "2023-02-01 15:26:48.600258",
+            "white_index": 21,
+            "dark_index": 23,
+            "d4w_index": 22,
+            "img_dir": ""
+        },
+        {
+            "folder": "experiments\\018",
+            "name": "NaCl10-p-pol",
+            "timestamp": "2023-02-01 15:29:16.289635",
+            "white_index": 21,
+            "dark_index": 23,
+            "d4w_index": 22,
+            "img_dir": "imgs\\experiments\\018"
+        },
+        {
+            "folder": "experiments\\019",
+            "name": "NaCl10-s-pol",
+            "timestamp": "2023-02-01 15:40:16.589982",
+            "white_index": 0,
+            "dark_index": 0,
+            "d4w_index": 0,
+            "img_dir": "imgs\\experiments\\019"
+        },
+        {
+            "folder": "experiments\\020",
+            "name": "NaCl16-s-pol",
+            "timestamp": "2023-02-01 15:57:48.065581",
+            "white_index": 0,
+            "dark_index": 0,
+            "d4w_index": 0,
+            "img_dir": "imgs\\experiments\\020"
+        },
+        {
+            "folder": "experiments\\021",
+            "name": "NaCl16-p-pol",
+            "timestamp": "2023-02-01 16:08:49.494062",
+            "white_index": 21,
+            "dark_index": 23,
+            "d4w_index": 22,
+            "img_dir": "imgs\\experiments\\021"
+        },
+        {
+            "folder": "experiments\\022",
+            "name": "NaCl16-reflectance",
+            "timestamp": "2023-02-01 16:27:02.341705",
+            "white_index": 24,
+            "dark_index": 27,
+            "d4w_index": 26,
+            "img_dir": "imgs\\experiments\\022"
+        },
+        {
+            "folder": "experiments\\023",
+            "name": "NaCl22-reflectance",
+            "timestamp": "2023-02-01 16:41:36.530009",
+            "white_index": 24,
+            "dark_index": 27,
+            "d4w_index": 26,
+            "img_dir": ""
+        },
+        {
+            "folder": "experiments\\024",
+            "name": "NaCl22-p-pol",
+            "timestamp": "2023-02-01 16:45:16.421609",
+            "white_index": 21,
+            "dark_index": 23,
+            "d4w_index": 22,
+            "img_dir": ""
+        },
+        {
+            "folder": "experiments\\025",
+            "name": "NaCl22-s-pol",
+            "timestamp": "2023-02-01 16:56:18.688055",
+            "white_index": 0,
+            "dark_index": 0,
+            "d4w_index": 0,
+            "img_dir": ""
+        }
+    ],
+    "last_anchors": [
+        {
+            "x": 54108,
+            "y": -52328
+        },
+        {
+            "x": 54456,
+            "y": -61044
+        },
+        {
+            "x": 62838,
+            "y": -52024
+        }
+    ]
+}
