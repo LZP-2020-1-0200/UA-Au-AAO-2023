@@ -11,8 +11,11 @@ import cv2
 
 OUTFOLDER = 'tmp_7r'
 JPG_TIMESTAMPS_FILE_NAME = 'Aleksandrs/timestamps-jpg-0201.txt'
-SPECTRA_ZIP_FILE_NAME = '31.01.23.zip'
-SPECTRA_TIMESTAMPS_FILE_BASENAME = 'timestamps-asc-0201'
+# SPECTRA_ZIP_FILE_NAME = '31.01.23.zip'
+# SPECTRA_TIMESTAMPS_FILE_BASENAME = 'timestamps-asc-0201'
+SPECTRA_ZIP_FILE_NAME = '31.01.23-02.02.23.zip'
+SPECTRA_TIMESTAMPS_FILE_BASENAME = 'timestamps-asc-0202'
+
 
 if os.path.exists(OUTFOLDER):
     for f in os.listdir(OUTFOLDER):
@@ -21,7 +24,7 @@ else:
     os.mkdir(OUTFOLDER)
 
 
-con = sqlite3.connect(c.DBFILE)
+con = sqlite3.connect(f"{OUTFOLDER}/{c.DBFILE}")
 cur = con.cursor()
 cur.execute("PRAGMA foreign_keys = ON")
 
@@ -75,10 +78,23 @@ cur.execute(f"""CREATE TABLE IF NOT EXISTS {c.FILE_TABLE}(
     FOREIGN KEY ({c.COL_JPG_FILE_NAME}) REFERENCES {c.JPG_FILE_TABLE} ({c.COL_JPG_FILE_NAME})
     )""")
 
+cur.execute(f"DROP TABLE IF EXISTS {c.REF_SETS_TABLE}")
+cur.execute(f"""CREATE TABLE IF NOT EXISTS {c.REF_SETS_TABLE}(
+    {c.COL_WHITE} TEXT PRIMARY KEY,
+    {c.COL_DARK_FOR_WHITE} TEXT NOT NULL,
+    {c.DARK} TEXT NOT NULL,
+    {c.COL_POL} TEXT NOT NULL,
+    FOREIGN KEY ({c.COL_WHITE}) REFERENCES {c.FILE_TABLE} ({c.COL_MEMBER_FILE_NAME}),
+    FOREIGN KEY ({c.COL_DARK_FOR_WHITE}) REFERENCES {c.FILE_TABLE} ({c.COL_MEMBER_FILE_NAME}),
+    FOREIGN KEY ({c.DARK}) REFERENCES {c.FILE_TABLE} ({c.COL_MEMBER_FILE_NAME})
+    )""")
+
 
 ignorelist = ('31.01.23/pieraksti.txt',
               '31.01.23/timestamps-asc-0131.txt',
-              '31.01.23/ekspozicija.png'
+              '31.01.23/ekspozicija.png',
+              '31.01.23/Kinetika/Kinetika_dns.asc',
+              '31.01.23/timestamps-asc-0201.txt'
               )
 
 with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
@@ -87,6 +103,11 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
             continue
         if member_file_name[-1] == '/':
             continue
+        if '/Kinetika/' in member_file_name:
+            continue
+        if '/imgs/experiments' in member_file_name:
+            continue
+
         if SPECTRA_TIMESTAMPS_FILE_BASENAME in member_file_name:
             spectra_timestamps_file_name = member_file_name
             continue
@@ -118,6 +139,7 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
             cur.execute(f"""INSERT OR IGNORE INTO {c.EXPERIMENTS_TABLE}
             ({c.COL_SERIES}) VALUES (?)""", [series])
 
+            # print(member_file_name)
             spot = file_name_parts[3]
             # print(spot)
             cur.execute(f"""INSERT OR IGNORE INTO {c.SPOTS_TABLE}
@@ -133,6 +155,7 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
     print(f"spectra_timestamps_file_name = {spectra_timestamps_file_name}")
     print(f"session_json_file_name = {session_json_file_name}")
 
+    # quit()
     with spectra_zf.open(session_json_file_name) as session_jsf:
         session_json_object = json.load(session_jsf)
     print(session_json_object.keys())
@@ -169,8 +192,8 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
             {c.COL_TSTAMP} = ?
         WHERE {c.COL_MEMBER_FILE_NAME} = ? """,
                     [timestamp, member_file_name])
-        if cur.rowcount != 1:
-            # print(cur.rowcount)
+        if cur.rowcount > 1:
+            print(cur.rowcount)
             print(timestamps_line_parts)
 
     cur.execute(f"""SELECT
@@ -225,26 +248,99 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
             reference_sets[-1][c.DARK] = specfilename
             continue
 
-        # print(specfilename)
-        ref_spec = load_andor_asc('', spectra_zf.read(specfilename))
-        nm = ref_spec['col1']
-        counts = ref_spec['col2']
+        if 'refs/white13' in specfilename:
+            reference_sets.append({c.POL: c.P_POL})
+            reference_sets[-1][c.WHITE] = specfilename
+            continue
+        if 'refs/darkForWhite12' in specfilename:
+            reference_sets[-1][c.DARK_FOR_WHITE] = specfilename
+            continue
+        if 'refs/dark12' in specfilename:
+            reference_sets[-1][c.DARK] = specfilename
+            continue
+
+        if 'refs/white12' in specfilename:
+            reference_sets.append({c.POL: c.S_POL})
+            reference_sets[-1][c.WHITE] = specfilename
+            continue
+        if 'refs/darkForWhite11' in specfilename:
+            reference_sets[-1][c.DARK_FOR_WHITE] = specfilename
+            continue
+        if 'refs/dark11' in specfilename:
+            reference_sets[-1][c.DARK] = specfilename
+            continue
+
+        if 'refs/white11' in specfilename:
+            reference_sets.append({c.POL: c.UNPOL})
+            reference_sets[-1][c.WHITE] = specfilename
+            continue
+        if 'refs/darkForWhite10' in specfilename:
+            reference_sets[-1][c.DARK_FOR_WHITE] = specfilename
+            continue
+        if 'refs/dark10' in specfilename:
+            reference_sets[-1][c.DARK] = specfilename
+            continue
+
+        print(specfilename)
+#        ref_spec = load_andor_asc('', spectra_zf.read(specfilename))
+#        nm = ref_spec['col1']
+#        counts = ref_spec['col2']
 #        print(f"Exposure Time (secs) = {ref_spec['Exposure Time (secs)']}")
 #        print( f"Number of Accumulations = {ref_spec['Number of Accumulations']}")
 
+    ref_fig_ratio, ref_fig_width = 6/4, 7
+    fig, (axs) = plt.subplots(3, figsize=(
+        ref_fig_width, ref_fig_width*ref_fig_ratio))
+    (ax_white, ax_dfw, ax_dark) = axs
     for refset in reference_sets:
         print(refset)
+        cur.execute(f"""INSERT INTO {c.REF_SETS_TABLE}
+            ({c.COL_WHITE},{c.COL_DARK_FOR_WHITE},{c.DARK},{c.COL_POL})
+            VALUES (?,?,?,?)""",
+                    [refset[c.WHITE], refset[c.DARK_FOR_WHITE], refset[c.DARK], refset[c.POL]])
+        if cur.rowcount != 1:
+            print(refset)
+        raw_white = load_andor_asc('', spectra_zf.read(refset[c.WHITE]))
+        ax_white.plot(
+            raw_white['col1'], raw_white['col2'], label=f"{refset[c.POL]} {refset[c.WHITE].split('/')[-1]}")
+
+        raw_dfw = load_andor_asc(
+            '', spectra_zf.read(refset[c.COL_DARK_FOR_WHITE]))
+        ax_dfw.plot(
+            raw_dfw['col1'], raw_dfw['col2'], label=f"{refset[c.POL]} {refset[c.COL_DARK_FOR_WHITE].split('/')[-1]}")
+
+        raw_dark = load_andor_asc(
+            '', spectra_zf.read(refset[c.DARK]))
+        ax_dark.plot(
+            raw_dark['col1'], raw_dark['col2'], label=f"{refset[c.POL]} {refset[c.DARK].split('/')[-1]}")
+
+    nm = raw_dark['col1']
+    for ax in axs:
+        ax.set(xlabel='$\\lambda$, nm')
+        ax.set(ylabel='counts')
+        ax.set(xlim=[min(nm), max(nm)])
+        ax.legend(loc="best")
+        ax.grid()
+
+    ax_dfw.title.set_text(c.DARK_FOR_WHITE)
+    ax_dark.title.set_text(c.DARK)
+    ax_white.title.set_text(c.WHITE)
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig(f"{OUTFOLDER}/references.png", dpi=300)
+    plt.close()
+
+    print("REFERENCES OK")
 
     experiments = session_json_object['experiments']
+    print(experiments[0].keys())
     for experiment in experiments:
-        print(experiment)
+        print(f"{experiment['folder']} {experiment['name']}")
 
+    # print(ref_spec.keys())
+    #dict_keys(['Date and Time', 'Software Version', 'Temperature (C)', 'Model', 'Data Type', 'Acquisition Mode', 'Trigger Mode', 'Exposure Time (secs)', 'Accumulate Cycle Time (secs)', 'Frequency (Hz)', 'Number of Accumulations', 'Readout Mode', 'Horizontal binning', 'Extended Data Range', 'Horizontally flipped', 'Vertical Shift Speed (usecs)', 'Pixel Readout Time (usecs)', 'Serial Number', 'Pre-Amplifier Gain', 'Spurious Noise Filter Mode', 'Photon counted', 'Data Averaging Filter Mode', 'SR163', 'Wavelength (nm)', 'Grating Groove Density (l/mm)', 'col1', 'col2'])
 
-
-        # print(ref_spec.keys())
-        #dict_keys(['Date and Time', 'Software Version', 'Temperature (C)', 'Model', 'Data Type', 'Acquisition Mode', 'Trigger Mode', 'Exposure Time (secs)', 'Accumulate Cycle Time (secs)', 'Frequency (Hz)', 'Number of Accumulations', 'Readout Mode', 'Horizontal binning', 'Extended Data Range', 'Horizontally flipped', 'Vertical Shift Speed (usecs)', 'Pixel Readout Time (usecs)', 'Serial Number', 'Pre-Amplifier Gain', 'Spurious Noise Filter Mode', 'Photon counted', 'Data Averaging Filter Mode', 'SR163', 'Wavelength (nm)', 'Grating Groove Density (l/mm)', 'col1', 'col2'])
-
-
+con.commit()
 quit()
 # print()
 #cur.execute(f"""SELECT * from {c.FILE_TABLE}""")
