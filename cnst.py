@@ -5,6 +5,14 @@ NaCl_04 = 'NaCl04'
 NaCl_10 = 'NaCl10'
 NaCl_16 = 'NaCl16'
 NaCl_22 = 'NaCl22'
+VEGF1000 = 'VEGF1000'
+VEGF500 = 'VEGF500'
+VEGF100 = 'VEGF100'
+BSA = 'BSA'
+DNS2h = 'DNS2h'
+DNS = 'DNS'
+PBS = 'PBS'
+
 
 POL = 'pol'
 P_POL = 'P-pol'
@@ -27,8 +35,6 @@ COLR = {AIR: u'#1f77b4',
         NaCl_10: u'#9467bd',
         NaCl_16: u'#8c564b',
         NaCl_22: u'#e377c2'}
-
-# [, , , , , , ', u'#7f7f7f', u'#bcbd22', u'#17becf']
 
 
 S1409 = 's1409poly'
@@ -56,7 +62,6 @@ SPOTS_TABLE = 'spots'
 REF_SETS_TABLE = 'ref_sets'
 
 
-
 COL_MEMBER_FILE_NAME = 'member_file_name'
 COL_JPG_FILE_NAME = 'jpg_file_name'
 COL_SIF_FILE = 'sif_file'
@@ -75,6 +80,7 @@ COL_RI = 'ri'
 COL_POL = 'pol'
 COL_LINE = 'line'
 COL_NAME = 'name'
+COL_START_TIME = 'start_time'
 
 REFS = {DARK_FOR_WHITE: {S0709: 'tumsa_balt_ref_2diena', S1409: 'tumsa_balta1509'},
         DARK: {S0709: '2_tumsa_merijumiem', S1409: 'tumsa1509'},
