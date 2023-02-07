@@ -56,7 +56,8 @@ cur.execute(f"""CREATE TABLE IF NOT EXISTS {c.EXPERIMENTS_TABLE}(
     {c.COL_WHITE} TEXT,
     {c.COL_MEDIUM} TEXT,
     {c.COL_POL} TEXT,
-    {c.COL_NAME} TEXT
+    {c.COL_NAME} TEXT,
+    {c.COL_START_TIME} TEXT
     )""")
 
 cur.execute(f"DROP TABLE IF EXISTS {c.SPOTS_TABLE}")
@@ -293,8 +294,12 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
     fig, (axs) = plt.subplots(3, figsize=(
         ref_fig_width, ref_fig_width*ref_fig_ratio))
     (ax_white, ax_dfw, ax_dark) = axs
+    refset_dict = {}
     for refset in reference_sets:
         print(f"refset = {refset}")
+        refset_name = refset[c.WHITE].split('/')[2].split('.')[0]
+        refset_dict[refset_name] = refset
+        print(f"refset_name = {refset_name}")
         cur.execute(f"""INSERT INTO {c.REF_SETS_TABLE}
             ({c.COL_WHITE},{c.COL_DARK_FOR_WHITE},{c.DARK},{c.COL_POL})
             VALUES (?,?,?,?)""",
@@ -342,9 +347,58 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
         white = None
         dark_for_white = None
         dark = None
+        reference_set={c.POL: None, c.WHITE: None, c.DARK_FOR_WHITE: None, c.DARK: None}
         medium = None
         pol = None
-        name = None
+        name = experiment['name']
+        start_time = experiment['timestamp']
+
+        if 'reflectance' in name:
+            pol = c.UNPOL
+        elif 's-pol' in name:
+            pol = c.S_POL
+        elif 'p-pol' in name:
+            pol = c.P_POL
+
+        if c.VEGF1000 in name:
+            medium = c.VEGF1000
+        elif c.VEGF500 in name:
+            medium = c.VEGF500
+        elif c.VEGF100 in name:
+            medium = c.VEGF100
+        elif c.BSA in name:
+            medium = c.BSA
+        elif c.DNS2h in name:
+            medium = c.DNS2h
+        elif c.DNS in name:
+            medium = c.DNS
+        elif c.PBS in name:
+            medium = c.PBS
+
+
+        elif c.NaCl_22 in name:
+            medium = c.NaCl_22
+        elif c.NaCl_16 in name:
+            medium = c.NaCl_16
+        elif c.NaCl_10 in name:
+            medium = c.NaCl_10
+        elif 'NaCl4' in name:
+            medium = c.NaCl_04
+        elif 'ater' in name:
+            medium = c.H2O
+        elif c.AIR in name:
+            medium = c.AIR
+
+        if series in ['009','015','016','022','023']:
+            reference_set=refset_dict['white10']
+
+        if pol == reference_set[c.POL]:
+            white = reference_set[c.WHITE]
+            dark_for_white = reference_set[c.DARK_FOR_WHITE]
+            dark = reference_set[c.COL_DARK]
+
+
+
         print(series)
 
         cur.execute(f"""UPDATE {c.EXPERIMENTS_TABLE} SET
@@ -353,9 +407,10 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
             {c.COL_DARK} = ?,
             {c.COL_MEDIUM} = ?,
             {c.COL_POL} = ?,
-            {c.COL_NAME} = ?
+            {c.COL_NAME} = ?,
+            {c.COL_START_TIME} =?
         WHERE {c.COL_SERIES} = ? """,
-                    [white, dark_for_white, dark, medium, pol, name, series])
+                    [white, dark_for_white, dark, medium, pol, name, start_time, series])
         if cur.rowcount != 1:
             print(point)
 
