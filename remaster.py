@@ -347,7 +347,8 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
         white = None
         dark_for_white = None
         dark = None
-        reference_set={c.POL: None, c.WHITE: None, c.DARK_FOR_WHITE: None, c.DARK: None}
+        reference_set = {c.POL: None, c.WHITE: None,
+                         c.DARK_FOR_WHITE: None, c.DARK: None}
         medium = None
         pol = None
         name = experiment['name']
@@ -375,7 +376,6 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
         elif c.PBS in name:
             medium = c.PBS
 
-
         elif c.NaCl_22 in name:
             medium = c.NaCl_22
         elif c.NaCl_16 in name:
@@ -389,15 +389,23 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
         elif c.AIR in name:
             medium = c.AIR
 
-        if series in ['009','015','016','022','023']:
-            reference_set=refset_dict['white10']
+        if series in ['011', '013', '019', '020', '025']:
+            reference_set = refset_dict['white07']
+        elif series in ['010', '014', '018', '021', '024']:  # 017 = fail
+            reference_set = refset_dict['white08']
+        elif series in ['009', '015', '016', '022', '023']:
+            reference_set = refset_dict['white10']
+        elif series in ['027', '032', '036', '040', '043', '046', '049']:
+            reference_set = refset_dict['white11']
+        elif series in ['028', '030', '034', '038', '041', '044', '047']:
+            reference_set = refset_dict['white12']
+        elif series in ['029', '031', '035', '039', '042', '045', '048']:
+            reference_set = refset_dict['white13']
 
         if pol == reference_set[c.POL]:
             white = reference_set[c.WHITE]
             dark_for_white = reference_set[c.DARK_FOR_WHITE]
             dark = reference_set[c.COL_DARK]
-
-
 
         print(series)
 
