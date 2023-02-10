@@ -8,14 +8,23 @@ import os
 import numpy as np
 import matplotlib.image as mpimg
 import cv2
+import matplotlib.cm as cm
+from subprocess import check_output
 
+#clr = []
+# for clrindex in range(10):
+#    clr.append(cm.plasma(clrindex*0.01))
+
+#print (clr)
+# quit()
+
+OUTPUTTYPE = ".pdf"
 OUTFOLDER = 'tmp_7r'
 JPG_TIMESTAMPS_FILE_NAME = 'Aleksandrs/timestamps-jpg-0202.txt'
 # SPECTRA_ZIP_FILE_NAME = '31.01.23.zip'
 # SPECTRA_TIMESTAMPS_FILE_BASENAME = 'timestamps-asc-0201'
 SPECTRA_ZIP_FILE_NAME = '31.01.23-02.02.23.zip'
 SPECTRA_TIMESTAMPS_FILE_BASENAME = 'timestamps-asc-0202'
-
 
 if os.path.exists(OUTFOLDER):
     for f in os.listdir(OUTFOLDER):
@@ -290,9 +299,8 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
 #        print(f"Exposure Time (secs) = {ref_spec['Exposure Time (secs)']}")
 #        print( f"Number of Accumulations = {ref_spec['Number of Accumulations']}")
 
-    ref_fig_ratio, ref_fig_width = 6/4, 7
-    fig, (axs) = plt.subplots(3, figsize=(
-        ref_fig_width, ref_fig_width*ref_fig_ratio))
+#    ref_fig_ratio, ref_fig_width = 6/4, 7
+    fig, (axs) = plt.subplots(3, figsize=c.A4_size_in)
     (ax_white, ax_dfw, ax_dark) = axs
     refset_dict = {}
     for refset in reference_sets:
@@ -333,7 +341,7 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
     ax_white.title.set_text(c.WHITE)
     plt.tight_layout()
     # plt.show()
-    plt.savefig(f"{OUTFOLDER}/references.png", dpi=300)
+    plt.savefig(f"{OUTFOLDER}/references{OUTPUTTYPE}", dpi=300)
     plt.close()
 
     print("REFERENCES OK")
@@ -341,8 +349,8 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
     experiments = session_json_object['experiments']
     print(experiments[0].keys())
     for experiment in experiments:
-        #print(f"{experiment['folder']} {experiment['name']}")
-        print(experiment)
+        # print(f"{experiment['folder']} {experiment['name']}")
+        # print(experiment)
         series = experiment['folder'].split('\\')[-1]
         white = None
         dark_for_white = None
@@ -407,8 +415,9 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
             dark_for_white = reference_set[c.DARK_FOR_WHITE]
             dark = reference_set[c.COL_DARK]
 
-        print(series)
+        # print(series)
 
+        # print('UPDATE EXPERIMENTS_TABLE')
         cur.execute(f"""UPDATE {c.EXPERIMENTS_TABLE} SET
             {c.COL_WHITE} = ?,
             {c.COL_DARK_FOR_WHITE} = ?,
@@ -421,11 +430,124 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
                     [white, dark_for_white, dark, medium, pol, name, start_time, series])
         if cur.rowcount != 1:
             print(point)
+    print('UPDATE EXPERIMENTS_TABLE OK')
+    ##################################################################################
+    ##################################################################################
+    ##################################################################################
+    ##################################################################################
+    for white_ref in refset_dict.keys():
+        # for white_ref in ['white12']:
+        andor_dark = load_andor_asc(
+            '', spectra_zf.read(refset_dict[white_ref][c.DARK]))
+        series_nm = np.array(andor_dark['col1'])
+        series_dark = np.array(andor_dark['col2'])
+        series_dfw = load_andor_asc(
+            '', spectra_zf.read(refset_dict[white_ref][c.DARK_FOR_WHITE]))['col2']
+        series_white = load_andor_asc(
+            '', spectra_zf.read(refset_dict[white_ref][c.WHITE]))['col2']
+        ref = np.array(series_white)-np.array(series_dfw)
+        print(white_ref)
+
+        cur.execute(f"""SELECT
+            {c.COL_SPOT},
+            {c.COL_XPOS},
+            {c.COL_YPOS},
+            {c.COL_LINE}
+                FROM {c.SPOTS_TABLE}
+                ORDER BY {c.COL_SPOT}
+                LIMIT 300
+        """)
+        for sel_spots_rez in cur.fetchall():
+            print(sel_spots_rez)
+            selected_spot = sel_spots_rez[0]
+
+            fig = plt.figure()
+            fig.set_figheight(c.A4_height_in)
+            fig.set_figwidth(c.A4_width_in)
+
+        #ax1 = plt.subplot2grid(shape=(3, 3), loc=(0, 0), colspan=2, rowspan=2)
+            ax_spectra = plt.subplot2grid(
+                shape=(4, 3), loc=(0, 0), colspan=3, rowspan=2)
+            ax_delta = plt.subplot2grid(
+                shape=(4, 3), loc=(2, 0), colspan=3, rowspan=2)
+
+            cur.execute(f"""SELECT
+                {c.COL_SERIES},
+                {c.COL_DARK},
+                {c.COL_DARK_FOR_WHITE},
+                {c.COL_WHITE},
+                {c.COL_MEDIUM},
+                {c.COL_POL},
+                {c.COL_NAME},
+                {c.COL_START_TIME}
+                    FROM    {c.EXPERIMENTS_TABLE}
+                    WHERE   {c.COL_WHITE}  LIKE ?
+                    ORDER BY {c.COL_START_TIME}
+            """, ['%'+white_ref+'.asc'])
+
+            plot_index = -1
+            for sel_experiment_rez in cur.fetchall():
+                plot_index += 1
+                print(sel_experiment_rez)
+                selected_series = sel_experiment_rez[0]
+                selected_name = sel_experiment_rez[6]
+                cur.execute(f"""SELECT
+                    {c.COL_MEMBER_FILE_NAME},
+                    {c.COL_FILE_TYPE},
+                    {c.COL_SERIES},
+                    {c.COL_SPOT},
+                    {c.COL_TSTAMP}
+                        FROM    {c.FILE_TABLE}
+                        WHERE   {c.COL_SERIES} = ?
+                        AND     {c.COL_SPOT} =?
+                    ORDER BY {c.COL_TSTAMP}
+                    """, [selected_series, selected_spot])
+
+                for sel_file_rez in cur.fetchall():
+
+                    print(sel_file_rez)
+                    sel_file_name = sel_file_rez[0]
+                    raw_spec = np.array(load_andor_asc(
+                        '', spectra_zf.read(sel_file_name))['col2'])
+                    Q = np.divide(raw_spec-series_dark, ref)
+                    ax_spectra.plot(series_nm, Q,
+                                    label=f"{sel_file_name[21:24]}, {selected_name}", color=cm.jet(plot_index/7))
+                    if plot_index == 0:
+                        baseline = Q
+                    else:
+                        dQ = Q - baseline
+                        ax_delta.plot(series_nm, dQ,
+                                      label=f"{sel_file_name[21:24]}, {selected_name}", color=cm.jet(plot_index/7))
+
+
+#        plt.plot(series_nm, series_white)
+#        plt.plot(series_nm, ref)
+            ax_spectra.legend(bbox_to_anchor=(0.0, -0.1),
+                              loc='upper left', ncol=3)
+            # (loc='upper left', ncol=2)
+            ax_spectra.set(title=selected_spot)
+            ax_delta.set(title='difference')
+
+            for ax in [ax_spectra, ax_delta]:
+                ax.set(xlabel="λ, nm")
+                ax.set(ylabel="counts")
+                ax.grid()
+                ax.set(xlim=[min(nm), max(nm)])
+
+            plt.tight_layout()
+            # plt.show()
+            plt.savefig(
+                f"{OUTFOLDER}/{white_ref}_{selected_spot.split('.')[0]}{OUTPUTTYPE}", dpi=300)
+            plt.close()
 
     # print(ref_spec.keys())
     #dict_keys(['Date and Time', 'Software Version', 'Temperature (C)', 'Model', 'Data Type', 'Acquisition Mode', 'Trigger Mode', 'Exposure Time (secs)', 'Accumulate Cycle Time (secs)', 'Frequency (Hz)', 'Number of Accumulations', 'Readout Mode', 'Horizontal binning', 'Extended Data Range', 'Horizontally flipped', 'Vertical Shift Speed (usecs)', 'Pixel Readout Time (usecs)', 'Serial Number', 'Pre-Amplifier Gain', 'Spurious Noise Filter Mode', 'Photon counted', 'Data Averaging Filter Mode', 'SR163', 'Wavelength (nm)', 'Grating Groove Density (l/mm)', 'col1', 'col2'])
 
 con.commit()
+
+check_output(f"pdftk {OUTFOLDER}\\*.pdf cat output all_spectra.pdf", shell=True).decode()
+
+
 quit()
 # print()
 #cur.execute(f"""SELECT * from {c.FILE_TABLE}""")
