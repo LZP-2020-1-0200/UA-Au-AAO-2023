@@ -33,6 +33,20 @@ else:
     os.mkdir(OUTFOLDER)
 
 
+def list_jpg_in_dir(dir_name):
+    files_list = []
+    for file in os.listdir(dir_name):
+        if file.endswith(".jpg"):
+            #            if "0202172116" in file:
+            #                 continue
+            files_list.append(os.path.join(dir_name, file))
+            if "0201145817" in file:
+                files_list.append(None)
+#            if "0202172116" in file:
+#                files_list.append(None)
+    return files_list
+
+
 con = sqlite3.connect(f"{OUTFOLDER}/{c.DBFILE}")
 cur = con.cursor()
 cur.execute("PRAGMA foreign_keys = ON")
@@ -55,7 +69,7 @@ for jpg_timestamp_line in jpg_timestamp_lines:
         cur.execute(f"""INSERT INTO {c.JPG_FILE_TABLE}
             ({c.COL_JPG_FILE_NAME},{c.COL_TSTAMP})
             VALUES (?,?)""",
-                    [jpg_filename, jpg_ts])
+                    [jpg_filename.replace("\\", "/"), jpg_ts])
 
 cur.execute(f"DROP TABLE IF EXISTS {c.EXPERIMENTS_TABLE}")
 cur.execute(f"""CREATE TABLE IF NOT EXISTS {c.EXPERIMENTS_TABLE}(
@@ -435,6 +449,101 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
     ##################################################################################
     ##################################################################################
     ##################################################################################
+    known_img_folders = [
+        ('009', 'Aleksandrs/paao_400nm_w3/point52water0102_2'),
+        ('015', 'Aleksandrs/paao_400nm_w3/012_refl_01feb_NaCl04'),
+        ('016', 'Aleksandrs/paao_400nm_w3/013_refl_01feb_NaCl10'),
+        ('022', 'Aleksandrs/paao_400nm_w3/018_refl_01feb_NaCl16'),
+        ('023', 'Aleksandrs/paao_400nm_w3/019_refl_01feb_NaCl22'),
+        #
+        ('027', 'Aleksandrs/paao_400nm_w3/200_PBS_02feb_refl'),
+        ('032', 'Aleksandrs/paao_400nm_w3/205_DNS_refl_02feb'),
+        ('036', 'Aleksandrs/paao_400nm_w3/208_DNS2h_refl_02feb'),
+        ('040', 'Aleksandrs/paao_400nm_w3/211_BSA_refl_02feb')
+
+    ]
+
+# 027	31.01.23/refs/dark10.asc	31.01.23/refs/darkForWhite10.asc	31.01.23/refs/white11.asc	PBS	unpol	PBS-reflectance	2023-02-02 12:53:33.697851
+# 032	31.01.23/refs/dark10.asc	31.01.23/refs/darkForWhite10.asc	31.01.23/refs/white11.asc	DNS	unpol	DNS-reflectance	2023-02-02 15:43:59.135533
+# 036	31.01.23/refs/dark10.asc	31.01.23/refs/darkForWhite10.asc	31.01.23/refs/white11.asc	DNS2h	unpol	DNS2h-reflectance	2023-02-02 17:28:23.240183
+# 040	31.01.23/refs/dark10.asc	31.01.23/refs/darkForWhite10.asc	31.01.23/refs/white11.asc	BSA	unpol	BSA-reflectance	2023-02-02 19:51:07.481109
+# 043	31.01.23/refs/dark10.asc	31.01.23/refs/darkForWhite10.asc	31.01.23/refs/white11.asc	VEGF100	unpol	VEGF100-reflectance	2023-02-02 21:00:48.710967
+# 046	31.01.23/refs/dark10.asc	31.01.23/refs/darkForWhite10.asc	31.01.23/refs/white11.asc	VEGF500	unpol	VEGF500-reflectance	2023-02-02 22:05:24.455062
+# 049	31.01.23/refs/dark10.asc	31.01.23/refs/darkForWhite10.asc	31.01.23/refs/white11.asc	VEGF1000	unpol	VEGF1000-reflectance	2023-02-02 23:04:04.689127
+
+    for folder_pair in known_img_folders:
+        imglist = list_jpg_in_dir(folder_pair[1])
+        print(len(imglist))
+        cur.execute(f"""SELECT
+            {c.COL_MEMBER_FILE_NAME}
+                FROM {c.FILE_TABLE}
+                WHERE {c.COL_SERIES} = ?
+                ORDER BY {c.COL_SPOT}
+        """, [folder_pair[0]])
+
+        img_index = -1
+        for sel_filename_rez in cur.fetchall():
+            img_index += 1
+            print(sel_filename_rez[0])
+            if imglist[img_index] is None:
+                jpegfilename = None
+            else:
+                jpegfilename = imglist[img_index].replace("\\", "/")
+            print(jpegfilename)
+
+            cur.execute(f"""UPDATE {c.FILE_TABLE} SET
+            {c.COL_JPG_FILE_NAME} = ?
+        WHERE {c.COL_MEMBER_FILE_NAME} = ? """,
+                        [jpegfilename, sel_filename_rez[0]])
+        if cur.rowcount != 1:
+            print(sel_filename_rez[0]+'MISSING JPG')
+
+#    HERE
+#    HERE
+#    HERE
+#    HERE
+#    HERE
+#    HERE
+    cur.execute(f"""SELECT
+            {c.COL_MEMBER_FILE_NAME},
+            {c.COL_TSTAMP}
+                FROM {c.FILE_TABLE}
+                WHERE {c.COL_SPOT} NOT NULL
+                AND {c.COL_JPG_FILE_NAME} IS NULL
+                ORDER BY {c.COL_TSTAMP}
+        """)
+    for rez_spot_wo_jpg in cur.fetchall():
+        print(rez_spot_wo_jpg)
+        cur.execute(
+            f"""SELECT {c.COL_JPG_FILE_NAME}, {c.COL_TSTAMP}
+                FROM {c.JPG_FILE_TABLE}
+                WHERE {c.COL_TSTAMP} < ?
+                ORDER BY {c.COL_TSTAMP} DESC
+                LIMIT 1""", [rez_spot_wo_jpg[1]])
+        for rez_jpg_select in cur.fetchall():
+            # print(rez_jpg_select)
+            cur.execute(f"""UPDATE {c.FILE_TABLE} SET
+                    {c.COL_JPG_FILE_NAME} = ?
+                WHERE {c.COL_MEMBER_FILE_NAME} = ? """,
+                        [rez_jpg_select[0], rez_spot_wo_jpg[0]])
+            if cur.rowcount != 1:
+                print(rez_jpg_select)
+
+#    quit()
+
+# cur.execute(f"""CREATE TABLE IF NOT EXISTS {c.FILE_TABLE}(
+#    {c.COL_MEMBER_FILE_NAME} TEXT PRIMARY KEY,
+#    {c.COL_FILE_TYPE} TEXT NOT NULL,
+#    {c.COL_SERIES} TEXT,
+#    {c.COL_SPOT} TEXT,
+#    {c.COL_TSTAMP} TEXT,
+#    {c.COL_JPG_FILE_NAME} TEXT,
+#    FOREIGN KEY ({c.COL_SERIES}) REFERENCES {c.EXPERIMENTS_TABLE} ({c.COL_SERIES}) ,
+#    FOREIGN KEY ({c.COL_SPOT}) REFERENCES {c.SPOTS_TABLE} ({c.COL_SPOT}),
+#    FOREIGN KEY ({c.COL_JPG_FILE_NAME}) REFERENCES {c.JPG_FILE_TABLE} ({c.COL_JPG_FILE_NAME})
+#    )""")
+
+ #   quit()
     for white_ref in refset_dict.keys():
         # for white_ref in ['white12']:
         andor_dark = load_andor_asc(
@@ -455,21 +564,39 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
             {c.COL_LINE}
                 FROM {c.SPOTS_TABLE}
                 ORDER BY {c.COL_SPOT}
-                LIMIT 300
+                LIMIT 333
         """)
         for sel_spots_rez in cur.fetchall():
             print(sel_spots_rez)
             selected_spot = sel_spots_rez[0]
 
             fig = plt.figure()
-            fig.set_figheight(c.A4_height_in)
-            fig.set_figwidth(c.A4_width_in)
+            plt.rcParams.update({'font.size': 8})
+            fig.set_figheight(c.A4_width_in)
+            fig.set_figwidth(c.A4_height_in)
 
         #ax1 = plt.subplot2grid(shape=(3, 3), loc=(0, 0), colspan=2, rowspan=2)
+            subplot_shape = (4, 4)
             ax_spectra = plt.subplot2grid(
-                shape=(4, 3), loc=(0, 0), colspan=3, rowspan=2)
+                shape=subplot_shape, loc=(0, 0), colspan=2, rowspan=2)
             ax_delta = plt.subplot2grid(
-                shape=(4, 3), loc=(2, 0), colspan=3, rowspan=2)
+                shape=subplot_shape, loc=(2, 0), colspan=2, rowspan=2)
+            ax_img0 = plt.subplot2grid(
+                shape=subplot_shape, loc=(0, 2))
+            ax_img1 = plt.subplot2grid(
+                shape=subplot_shape, loc=(0, 3))
+            ax_img2 = plt.subplot2grid(
+                shape=subplot_shape, loc=(1, 2))
+            ax_img3 = plt.subplot2grid(
+                shape=subplot_shape, loc=(1, 3))
+            ax_img4 = plt.subplot2grid(
+                shape=subplot_shape, loc=(2, 2))
+            ax_img5 = plt.subplot2grid(
+                shape=subplot_shape, loc=(2, 3))
+            ax_img6 = plt.subplot2grid(
+                shape=subplot_shape, loc=(3, 2))
+            ax_imgs = (ax_img0, ax_img1, ax_img2,
+                       ax_img3, ax_img4, ax_img5, ax_img6)
 
             cur.execute(f"""SELECT
                 {c.COL_SERIES},
@@ -496,7 +623,8 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
                     {c.COL_FILE_TYPE},
                     {c.COL_SERIES},
                     {c.COL_SPOT},
-                    {c.COL_TSTAMP}
+                    {c.COL_TSTAMP},
+                    {c.COL_JPG_FILE_NAME}
                         FROM    {c.FILE_TABLE}
                         WHERE   {c.COL_SERIES} = ?
                         AND     {c.COL_SPOT} =?
@@ -518,10 +646,20 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
                         dQ = Q - baseline
                         ax_delta.plot(series_nm, dQ,
                                       label=f"{sel_file_name[21:24]}, {selected_name}", color=cm.jet(plot_index/7))
+                    jpg_file_name = sel_file_rez[5]
+                    if not jpg_file_name is None:
+                        original_jpg = mpimg.imread(jpg_file_name)
+                        ax_imgs[plot_index].imshow(original_jpg)
+
+                        ax_imgs[plot_index].set_title(
+                            jpg_file_name[25:], fontdict={'fontsize': 7})
+
+                for ax_img in ax_imgs:
+                    ax_img.axis('off')
 
 
 #        plt.plot(series_nm, series_white)
-#        plt.plot(series_nm, ref)
+#       plt.plot(series_nm, ref)
             ax_spectra.legend(bbox_to_anchor=(0.0, -0.1),
                               loc='upper left', ncol=3)
             # (loc='upper left', ncol=2)
@@ -545,7 +683,8 @@ with zipfile.ZipFile(SPECTRA_ZIP_FILE_NAME, "r") as spectra_zf:
 
 con.commit()
 
-check_output(f"pdftk {OUTFOLDER}\\*.pdf cat output all_spectra.pdf", shell=True).decode()
+check_output(
+    f"pdftk {OUTFOLDER}\\*.pdf cat output all_spectra.pdf", shell=True).decode()
 
 
 quit()
